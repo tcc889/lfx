@@ -60,13 +60,25 @@ class Index extends Controller
                 $this->error('该分类已存在');
             }
 
-            $parent = category::where('id', $pid)->find();
+            if  ($pid == 0){
 
+                $level = 0;
+                $path = '0-';
+            }else{
+                $parent = category::where('id',$pid)->find();
+                if (empty($parent)){
+                    $this ->error('非法操作');
+                }
+                $level = $parent->level + 1;
+                $path = $parent->path . $pid.'-';
+
+            }
             //入库
             $data = [
                 'name'=>$name,
                 'pid' => $pid,
-                'level' => $parent->level + 1
+                'level' => $level,
+                'path' => $path
                 ];
             if (category::create($data)){
                 $this->success('成功');
@@ -91,14 +103,17 @@ class Index extends Controller
                     $space .= '&nbsp;&nbsp;&nbsp;&nbsp;';
                 }
                 $url = url('admin/Index/addCategory', ['id'=>$v['id']]);
-                $str .= <<<SSS
+                $str .= <<<DDDD
                     <tr class="x{$pid}">
                         <td>{$v['id']}</td>
                         <td>{$space}|--{$v['name']}</td>
                         <td><a href="{$url}">添加</a></td>
-                        <td><a data-id="{$v['id']}" class="point-e children" data-op="plus"><i class="fa fa-plus"></i></a></td>
+                        <td><a data-id="{$v['id']}" class="point-e children" data-op="plus"><i class="fa fa-plus">
+                                </i>
+                            </a>
+                        </td>
                     </tr>
-SSS;
+DDDD;
             }
 
             return $str;
@@ -108,5 +123,37 @@ SSS;
             return $this->fetch();
         }
     }
-    
+
+    public function categoryTree()
+    {
+        $all = category::select()->toArray();
+
+        $new = $this->toTree($all);
+
+        $this->assign('data', json_encode($new));
+        return $this->fetch();
+    }
+
+    /**
+     * 将一个记录层级结构的二维数组转成树形结构
+     * @param array $data 记录有层级信息的二维数组
+     * @param int $pid 从pid为哪个开始
+     * @return array
+     */
+    protected function toTree($data, $pid = 0)
+    {
+        $newData = [];
+
+        foreach ($data as $v){
+
+            if ($v['pid'] == $pid){
+                //找子类
+                $v['text'] = $v['name'];
+                $v['children'] = $this->toTree($data, $v['id']);
+                $newData[] = $v;
+            }
+        }
+        return $newData;
+    }
+
 }
