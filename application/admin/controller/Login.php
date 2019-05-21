@@ -8,6 +8,7 @@
 
 namespace app\admin\controller;
 
+use app\admin\model\admin;
 use think\Controller;
 
 class Login extends Controller
@@ -16,11 +17,13 @@ class Login extends Controller
     {
         session('adminLoginInfo',null);
         $this->redirect('admin/Login/in');
+
     }
 
     public function in()
     {
         $re  = $this->request;
+
 
         if ($re->isPost()){
 
@@ -39,11 +42,13 @@ class Login extends Controller
             ];
 
             $info = $this->validate($data, $rule, $msg);
+
             if ($info !== true){
                 return $this->error($info);
             }
 
             $admin = admin::where('mobile', $data['mobile'])->find();
+
 
             if (!$admin){
                 $this->error('请输入正确的账户或密码');
@@ -52,7 +57,7 @@ class Login extends Controller
             if (password_verify($data['password'],$admin->password)){
 
                 session('adminLoginInfo',$admin);
-                $this->success('👌OK',url('admin/Index?index'));
+                $this->success('👌OK',url('admin/Index/index'));
             }else{
                 $this->error('输入的账号或密码有误');
             }
