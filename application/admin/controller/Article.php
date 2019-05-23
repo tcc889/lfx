@@ -22,6 +22,50 @@ class Article extends Controller
         return $this->fetch();
     }
 
+    public function xg(){
+        //判断是否为GET请求
+        if ($this->request->isGet()) {
+            //获取url穿过来的id值
+            $id = $this->request->param('id');
+            //获取一条记录并把它转成数组
+            $list = \app\admin\model\article::get($id)->toArray();
+            //自定义标签
+            $this->assign('list', $list);
+            return $this->fetch();
+        }
+        //判断是否为POST请求
+        if ($this->request->isPost()){
+            $id = $this->request->param('id');
+            $data = $this->request->only(['title','content','author']);
+            //验证
+            $rule = [
+                'title' => 'require|length:1,50',
+                'author' =>'length:2,10',
+                'content' => 'require|length:10,65535',
+            ];
+            $msg=[
+                'title.require' => '标题为必填项',
+                'title.length:1,50' => '标题长度过长或过短',
+                'author.length' => '署名长度应在2-10之间',
+                'content.require' => '文章内容为必填项',
+                'content.length' =>'文章内容长度过长或者过短'
+            ];
+            $check = $this->validate($data,$rule,$msg);
+            if ($check!== true){
+                $this->error('错误');
+            }
+            $a = \app\admin\model\article::get($id);
+            if ($a->content == $data['content']){
+                $this->error('您的内容必须修改');
+            }
+            if ($a->save($data)){
+                $this->success('成功',url('admin/Article/lists'));
+            }else{
+                $this->error('失败');
+            }
+    }
+        }
+
     public function add(){
 
         $re = $this->request;
@@ -63,11 +107,13 @@ class Article extends Controller
 
         if ($re->isGet()){
 
-            $all = category::where('pid', 0)->all();
+            $all = category::where('pid',0)->all();
 
             $this->assign('all', $all);
             return $this->fetch();
         }
+
+
     }
 /**
 * 使用ajax获取文章分类
@@ -89,7 +135,7 @@ class Article extends Controller
      */
     public function lists()
     {
-        $list = \app\admin\model\article::with('category')->order('create_time DESC')->paginate(2);
+        $list = \app\admin\model\article::with('category')->order('create_time DESC')->paginate(4);
         $this->assign('list', $list);
         return $this->fetch();
     }
@@ -97,25 +143,39 @@ class Article extends Controller
     public function changeStatus()
     {
         $id = $this->request->param('id');
-        if (empty($id)){
+        if (empty($id)) {
             return $this->error('非法操作');
         }
 
         $obj = \app\admin\model\article::get($id);
-        if (empty($obj)){
+        if (empty($obj)) {
             return $this->error('非法操作');
         }
 
         $obj->status = abs($obj->status - 1);
 
-        if ($obj->save()){
+        if ($obj->save()) {
             return $this->success('成功', '', $obj->status);
-        }else{
+        } else {
             return $this->error('失败');
         }
-
-
     }
+
+        //文章删除
+        public function del()
+        {
+            //获取ajax传来的id
+            $id = $this->request->param('id');
+
+            $data = \app\admin\model\article::get($id);
+
+            if ($data->delete()){
+                $this->success('成功');
+            }else{
+                $this->error('失败');
+            }
+    }
+
 
 
 }

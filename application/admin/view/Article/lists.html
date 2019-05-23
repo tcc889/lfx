@@ -48,8 +48,8 @@
 
                         </td>
                         <td>
-                            <a href="">删除</a>
-                            <a href="">修改</a>
+                            <button type="button" id="sc" data-del-id="{$v.id}" class="btn btn-white">删除</button>
+                            <a href="{:url('admin/Article/xg',['id'=>$v['id']])}" id="xg" data-xg-id="{$v.id}" class="btn btn-white">修改</a>
                         </td>
                     </tr>
 
@@ -71,10 +71,14 @@
 
 <script>
 
+    //使用jQuery获取点击事件
     $('.status').click(function () {
 
         var i = $(this);
-        $.post('{:url("admin/Article/changeStatus")}', {id: i.attr('data-id')}, function (e) {
+        $.post('{:url("admin/Article/changeStatus")}', {id: i.attr('data-id')}, function (e)
+        {
+
+            // console.log(e);
             if (!e.code){
                 layer.alert(e.msg);
             }else{
@@ -90,6 +94,19 @@
             }
         })
 
+    })
+    $('td').on('click','#sc',function () {
+        if  (!confirm('删除确认')){
+            return false;
+        }
+        var i = $(this);
+        $.post('{:url("admin/Article/del")}',{id:i.attr('data-del-id')},
+            function (e) {
+                console.log(e);
+                alert(e.msg);
+                i.parent().parent().remove();
+            }
+        )
     })
 
 

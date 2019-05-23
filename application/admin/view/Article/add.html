@@ -95,6 +95,8 @@
 
 
 <script>
+
+    <!--百度富文本编辑器调动-->
     var ue = UM.getEditor('editor1');
 
     $('#form').on('change', '.category',function () {
@@ -103,19 +105,25 @@
 
         $.post('{:url("admin/Article/ajaxCategory")}', {id: i.val()}, function (e) {
 
-            console.log(e);
+            // console.log(e);
 
             if (e.length) {
                 var str = '<div class="col-sm-2"><select class="form-control m-b category" name="category_id"><option value="0">请选择分类</option>';
                 for (var j in e) {
                     var d = e[j];
 
-                    str += '<option value="' + d.id + '">' + d.name + '</option>';
+                    str += '<option value="' + d.id + '">' +d.name + '</option>';
 
                 }
                 str += '</select></div>';
+
+                //指向父级并把父级之下的同级兄弟属性全部移除
                 i.parent().nextAll().remove();
+                //并把 str html 添加在他后面
                 i.parent().after(str);
+                if (i.val() == ""){
+                    i.parent().nextAll().remove();
+                }
             }else{
                 i.parent().nextAll().remove();
             }
@@ -125,10 +133,12 @@
     $('#btn').click(function () {
 
         var data = $('#form').serialize();
+
         $.post('',data,function(e){
             if (e.code){
-                layer.alert(e.msg,{icon:1},function(){
 
+                layer.alert(e.msg,{icon:1},function(){
+                    location.href = e.url
                 })
             } else{
                 layer.alert(e.msg,{icon:2})
