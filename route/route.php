@@ -9,7 +9,7 @@
 // | Author: liu21st <liu21st@gmail.com>
 // +----------------------------------------------------------------------
 
-Route::rule('', 'admin/Login/in')->method('GET,POST');
+Route::rule('log', 'admin/Login/in')->method('GET,POST');
 
 Route::get('admin$', 'admin/Index/index');
 

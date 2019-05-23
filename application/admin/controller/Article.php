@@ -8,6 +8,7 @@
 
 namespace app\admin\controller;
 
+use app\admin\model\category;
 use think\Controller;
 
 class Article extends Controller
@@ -25,7 +26,7 @@ class Article extends Controller
             $data = $re->only(['title','category_id','author','content','status']);
 
             $rule = [
-                'tite'=>'require|length:1,50',
+                'title'=>'require|length:1,50',
                 'category_id' => 'require|min:1',
                 'author' => 'length:2,10',
                 'content' => 'require|length:10,65535',

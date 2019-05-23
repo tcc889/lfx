@@ -20,7 +20,7 @@
         <div class="col-sm-12">
             <div class="ibox float-e-margins">
                 <div class="ibox-title">
-                    <h5>添加文章<small</small></h5>
+                    <h5>添加文章<small></small></h5>
                 </div>
                 <div class="ibox-content">
                     <form method="post" action="" id="form" class="form-horizontal">
@@ -105,12 +105,33 @@
 
             console.log(e);
 
-            if (e.length){
+            if (e.length) {
                 var str = '<div class="col-sm-2"><select class="form-control m-b category" name="category_id"><option value="0">请选择分类</option>';
-                for (var j in e){
+                for (var j in e) {
                     var d = e[j];
 
-                    str += '<option value="'+d.id+'">'+d.name+'</option>';
+                    str += '<option value="' + d.id + '">' + d.name + '</option>';
 
                 }
                 str += '</select></div>';
+                i.parent().nextAll().remove();
+                i.parent().after(str);
+            }
+        })
+    });
+
+    $('#btn').click(function () {
+
+        var data = $('#form').serialize();
+        $.post('',data,function(e){
+            if (e.code){
+                layer.alert(e.msg,{icon:1},function(){
+
+                })
+            } else{
+                layer.alert(e.msg,{icon:2})
+            }
+        })
+    })
+</script>
+</body></html>
