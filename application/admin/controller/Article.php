@@ -17,6 +17,11 @@ class Article extends Controller
     /*
      * 添加
      */
+
+    public function bj(){
+        return $this->fetch();
+    }
+
     public function add(){
 
         $re = $this->request;

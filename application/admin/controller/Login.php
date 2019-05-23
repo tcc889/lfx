@@ -13,6 +13,7 @@ use think\Controller;
 
 class Login extends Controller
 {
+
     public function out()
     {
         session('adminLoginInfo',null);
