@@ -11,6 +11,8 @@
     <meta name="description" content="">
     {include file='common/css'}
     <link href="/static/ui/library/um/themes/default/css/umeditor.css" type="text/css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="/static/ui/library/webuploader/webuploader.css">
+
 
 </head>
 
@@ -74,12 +76,34 @@
                                 <input autocomplete="off" type="radio" value="1" name="status"> 已发布
                             </div>
                         </div>
+
+
+
+
+                        <div class="form-group">
+
+                            <!--标签-->
+                            <label class="col-sm-2 content-label">微缩图</label>
+
+                            <div class="col-sm-10">
+                                <div id="img" ></div>
+                                <div id="picker">选择图片</div>
+                            </div>
+                        </div>
+
+
+
+
                         <div class="hr-line-dashed"></div>
 
                         <div class="form-group">
                             <div class="col-sm-4 col-sm-offset-2">
+
+                                <input type="hidden" name="thumb" id="thumb" value="">
+                                <input type="hidden" name="minthumb" id="minthumb" value="">
                                 <button class="btn btn-primary" id="btn" type="button">确认添加</button>
-                                <!--<button class="btn btn-white" onclick="history.back(-1);" type="button">返回分类列表</button>-->
+                                <!--<button class="btn btn-primary" onclick="history.back(-1);" type="button">返回上一页</button>-->
+                                <button class="btn btn-white" onclick="history.back(-1);" type="button">返回分类列表</button>
                             </div>
                         </div>
                     </form>
@@ -92,6 +116,8 @@
 {include file='common/js'}
 <script src="/static/ui/library/um/umeditor.config.js"></script>
 <script src="/static/ui/library/um/umeditor.js"></script>
+<script src="/static/ui/library/webuploader/webuploader.js"></script>
+
 
 
 <script>
@@ -145,5 +171,49 @@
             }
         })
     })
+
+
+
+
+
+
+
+
+    // 添加图片
+    var uploader = WebUploader.create({
+
+        // swf文件路径
+        swf:'/static/ui/library/webuploader/Uploader.swf',
+        //文件接收端
+        server:'{:url("admin/Article/uploadImage")}',
+        // 选择文件的按钮。可选。
+        // 内部根据当前运行是创建，可能是input元素，也可能是flash.
+        pick: '#picker',
+        auto:true,
+        // 只允许选择图片文件。
+        // duplicate:true,
+        // resize:false,
+        //
+        accept: {
+            title: 'Images',
+            extensions: 'gif,jpg,jpeg,bmp,png',
+            mimeTypes: 'image/*'
+        }
+    });
+
+    //上传成功
+    uploader.on( 'uploadSuccess', function(file, res) {
+        // console.log(res);
+        if (res.code) {
+            $('#img').append('<img  style="height: 60px;"  src="'+'/'+res.min+'">');
+            $('#thumb').val(res.thumb);
+            $('#minthumb').val(res.min);
+        }else{
+
+            layer.alert(res.info, {icon: 2})
+        }
+    });
+
+
 </script>
 </body></html>

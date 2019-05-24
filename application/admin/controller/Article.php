@@ -72,7 +72,7 @@ class Article extends Controller
 
         if  ($re->isPost()){
 
-            $data = $re->only(['title','category_id','author','content','status']);
+            $data = $re->only(['title','category_id','author','content','status','thumb','minthumb']);
 
             $rule = [
                 'title'=>'require|length:1,50',
@@ -84,7 +84,6 @@ class Article extends Controller
             $msg = [
                 'title.require' => '文章标题为必填项',
                 'title.length' => '文章标题长度应在1-50个字符之间',
-                'category_id.require' => '请选择正确的分类信息',
                 'category_id.min' => '请选择正确的分类信息',
                 'author.length' => '署名长度应在2-10个字符之间',
                 'content.require' => '文章内容为必填项',
@@ -174,8 +173,28 @@ class Article extends Controller
             }else{
                 $this->error('失败');
             }
+
     }
 
+    /*
+     * 图片上传服务的
+     */
+    public function uploadImage()
+    {
+        $image = $this->request->file('file');
+        $res = $image->validate(['size' => 1048576, 'ext' => 'jpg,peg,gif,jpeg'])->move('static/upload/');
 
+        if ($res){
+            $path = $res->getPathname();
+            $min = $res->getPath().'/min'.$res->getFilename();
+
+            $im = \think\Image::open($path);
+
+            $im->thumb(60,60,\think\Image::THUMB_CENTER)->save($min);
+            return json(['code'=>1, 'thumb'=> $path, 'min'=> $min]);
+        }else{
+            return json(['code'=>0, 'info'=>$image->getError()]);
+        }
+    }
 
 }
