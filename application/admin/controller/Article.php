@@ -197,4 +197,37 @@ class Article extends Controller
         }
     }
 
+
+    public function ueUpload()
+    {
+        $configData = file_get_contents("static/ui/library/ue/php/config.json");
+        $config = json_decode(preg_replace("/\/\*[\s\S]+?\*\//", "", $configData), true);
+
+        if ($this->request->isGet()){
+            return json_encode($config);
+        }
+
+        if ($this->request->isPost()){
+            $image = $this->request->file('upfile');
+            $allow = 'png,jpg,jpeg,gif,bmp,flv,swf,mkv,avi,rm,rmvb,mpeg,mpg,ogg,ogv,mov,wmv,mp4,webm,mp3,wav,mid,rar,zip,tar,gz,7z,bz2,cab,iso,doc,docx,xls,xlsx,ppt,pptx,pdf,txt,md';
+            $res = $image->validate(['size'=>1048576, 'ext'=>$allow])->move('static/upload/');
+            if ($res){
+                $info =  [
+                    "originalName" => $res->getFilename() ,
+                    "name" => $res->getSaveName() ,
+                    "url" => '/'.$res->getPathname() ,
+                    "size" => $res->getSize() ,
+                    "type" => $res->getExtension() ,
+                    "state" => 'SUCCESS'
+                ];
+                return json_encode($info);
+            }
+        }else{
+            return [
+                'state' => 'ERROR'
+            ];
+        }
+    }
+
+
 }

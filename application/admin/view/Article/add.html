@@ -55,7 +55,13 @@
                         <div class="form-group">
                             <label class="col-sm-2 control-label">内容</label>
                             <div class="col-sm-10">
-                                <textarea name="content" style="height: 300px;" id="editor1" class="form-control"></textarea>
+                                <script id="editor1" name="content" type="text/plain">
+        这里写你的初始化内容
+    </script>
+
+
+
+                                <!--<textarea name="content" style="height: 300px;" id="editor1" class="form-control"></textarea>-->
                             </div>
                         </div>
 
@@ -114,8 +120,8 @@
 </div>
 
 {include file='common/js'}
-<script src="/static/ui/library/um/umeditor.config.js"></script>
-<script src="/static/ui/library/um/umeditor.js"></script>
+<script src="/static/ui/library/ue/ueditor.config.js"></script>
+<script src="/static/ui/library/ue/ueditor.all.js"></script>
 <script src="/static/ui/library/webuploader/webuploader.js"></script>
 
 
@@ -123,11 +129,26 @@
 <script>
 
     <!--百度富文本编辑器调动-->
-    var ue = UM.getEditor('editor1');
+    var ue = UE.getEditor('editor1',{
+        toolbars:[[
+            'fullscreen', 'source', '|', 'undo', 'redo', '|',
+        'bold', 'italic', 'underline',  'strikethrough',  '|', 'forecolor', 'backcolor', 'insertorderedlist', 'insertunorderedlist', 'selectall', 'cleardoc', '|',
+        'rowspacingtop', 'rowspacingbottom', 'lineheight', '|',
+        'indent', 'justifyleft', 'justifycenter', 'justifyright', 'justifyjustify', '|', 'imagenone', 'imageleft', 'imageright', 'imagecenter', '|',
+        'simpleupload', 'insertimage', 'emotion', 'scrawl', 'insertvideo', 'music', 'attachment', 'map', 'gmap', 'insertframe', 'insertcode', 'webapp', 'pagebreak', 'template', 'background', '|',
+        'horizontal', 'date', 'time', 'spechars', 'snapscreen', 'wordimage', '|',
+        'inserttable', 'deletetable', 'insertparagraphbeforetable', 'insertrow', 'deleterow', 'insertcol', 'deletecol', 'mergecells', 'mergeright', 'mergedown', 'splittocells', 'splittorows', 'splittocols', 'charts', '|',
+        'print'
+        ]],
+        serverUrl:"{:url('admin/Article/ueUpload')}",
+        initialFrameHeight:'350'
+
+    });
 
     $('#form').on('change', '.category',function () {
 
         var i = $(this);
+
 
         $.post('{:url("admin/Article/ajaxCategory")}', {id: i.val()}, function (e) {
 
@@ -198,7 +219,7 @@
             title: 'Images',
             extensions: 'gif,jpg,jpeg,bmp,png',
             mimeTypes: 'image/*'
-            
+
         }
     });
 
