@@ -79,7 +79,8 @@ class Index extends Controller
                 'name'=>$name,
                 'pid' => $pid,
                 'level' => $level,
-                'path' => $path
+                'path' => $path,
+                'type' => $re->param('type')
                 ];
             if (category::create($data)){
                 $this->success('成功');
