@@ -35,7 +35,7 @@ class Index extends Controller
             $list = article::where('category_id','in', $categories)
                 ->where('status', 1)
                 ->order('create_time desc')
-                ->paginate(10);
+                ->paginate(1);
         }
 
         $this->assign('list',$list);
@@ -70,7 +70,7 @@ class Index extends Controller
     public function about()
     {
         //分类的id
-        $id = $this->request->param('id');
+        $id = $this->request->param('id',5);
         $this->categoryList(2);
 
         $info = article::where('category_id', $id)->find();
@@ -101,7 +101,7 @@ class Index extends Controller
         $this->assign('list',$list);
         $categoryList = category::where('type',2)->select();
         $this->assign('categoryList',$categoryList);
-        $images = images::where('category_id',$id)->paginate(1);
+        $images = images::where('category_id',$id)->paginate(5);
         $this->assign('images',$images);
 
         return $this->fetch();

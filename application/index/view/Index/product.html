@@ -1,22 +1,86 @@
 {extend name="xwy/xwy" /}
 {block name='main'}
+<style>
+
+    .file-manager .on{
+        color: #dcbf0a;
+    }
+    .file-manager ul{
+        margin-top: 20px;
+    }
+    .file-manager ul a {
+        margin-left: 20px;
+    }
+
+    #page ul{
+        display: flex;
+        width: 100px;
+        margin: auto;
+    }
+    #page ul a{
+        background-color: black;
+        display: inline-block;
+        color: white;
+        text-align: center;
+        width: 20px;
+        height: 26px;
+        font-size: 16px;
+    }
+    #page ul li{
+        padding: 0px;
+        width: 20px;
+        margin-left: 5px;
+        margin-right: 5px;
+        background-color: transparent;
+        background-attachment:fixed;
+    }
+    #page ul li span{
+        text-align: center;
+        font-size: 16px;
+        margin-left: 6px;
+        display: block;
+        width: 20px;
+        background-color: red;
+    }
 
 
-<div class="mainbody">
-    <div class="title01">产品中心</div>
-    <div class="product">
-        <ul>
-            {foreach $category as $v}
-            <a {eq name="id" value="$v['id']"}  class="on"{/eq} href="{:url('Index/index/porduct', ['id'=>$v['id']])}">{$v.name}</a>
-            {/foreach}
-        </ul>
-        <div class="clear"></div>
-        <div class="pages"><a class="prev current">上一页</a><a class="current">1</a><a
-                href="/product/index/id/6605/p/2.html">2</a><a href="/product/index/id/6605/p/3.html">3</a><a>...</a><a
-                href="/product/index/id/6605/p/6.html">6</a><a href="/product/index/id/6605/p/2.html"
-                                                               class="next">下一页</a></div>
+</style>
+<div class="row">
+    <div class="col-sm-3">
+        <div class="ibox float-e-margins">
+            <div class="ibox-content">
+                <div class="file-manager">
+                    <ul class="folder-list" style="padding: 0">
+                        {foreach $category as $v}
+                        <a {eq name="id" value="$v['id']" } class="on" {/eq} href="{:url('Index/index/product', ['id'=>$v['id']])}">{$v.name}</a>
+                        {/foreach}
+                    </ul>
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="clear"></div>
+    <div class="mainbody">
+        <div class="clear"></div>
+
+        <div class="mainbody">
+            <div class="title01">产品中心</div>
+            <div class="product">
+
+                <ul>
+                    {foreach $images as $v}
+                    <li><a id="image"><img src="/{$v.location}" ></a></li>
+                    {/foreach}
+                </ul>
+            </div>
+
+            <div class="clear"></div>
+            <div id="page">
+                {$images|raw}
+            </div>
+        </div>
+
+    </div>
 </div>
 
 {/block}
@@ -26,14 +90,13 @@
 
 
 <script src="/static/ui/library/layer/layer/layer.js"></script>
-<!--<script>-->
-    <!--$('.mainbody').on('click','#image',function () {-->
-        <!--layer.photos({-->
-            <!--photos: '.mainbody',-->
-            <!--anim: 1 //0-6的选择，指定弹出图片动画类型，默认随机（请注意，3.0之前的版本用shift参数）-->
-        <!--});-->
-    <!--})-->
-
-<!--</script>-->
+<script>
+    $('.mainbody').on('click','#image',function () {
+        layer.photos({
+            photos: '.mainbody',
+            anim: 5 //0-6的选择，指定弹出图片动画类型，默认随机（请注意，3.0之前的版本用shift参数）
+        });
+    })
+</script>
 
 {/block}
